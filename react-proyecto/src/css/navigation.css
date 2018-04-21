@@ -2,4 +2,8 @@
 {
 	margin:0% !important;
 	background: #e3e5e6!important;
+	position: fixed!important;
+    z-index: 10!important;
+    width: 100%!important;
+
 }
