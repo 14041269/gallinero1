@@ -47,3 +47,17 @@
         text-align: center;
  
     }
+
+.registroBI
+{
+display: block;
+
+}
+.botonesBI
+{
+    margin-left: 5%;
+}
+.btn-sizeBI
+{
+    width: 20%;
+}

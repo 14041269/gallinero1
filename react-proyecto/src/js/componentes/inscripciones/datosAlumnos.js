@@ -8,21 +8,12 @@ class DatosAlumnos extends Component {
 		super();
 		this.state={
 
-			mensajes:["Durango","Guadalajara","CDMX"]
+			mensajes:[]
 		}
 
 	}
 
-	handle_change()
-	{
-
-	}
-	_getComments(){   
-       		
-  /*     		return this.state.mensajes.map((mensaje) => {
-       			return <h />
-     });*/
-       	}
+	
 
 	render()
 	{
@@ -31,19 +22,19 @@ class DatosAlumnos extends Component {
 
 					
 						<label >Nombre
-							<input type="text" className="nombre" required/>
+							<input type="text" name="nombre" required/>
 						</label>
 						<label >Apellido paterno 
-							<input type="text" className="ap" required/>
+							<input type="text" name="ap" required/>
 						</label>
 						<label >Apellido materno 
-							<input type="text" className="nombre" required/>
+							<input type="text" name="nombre" required/>
 						</label>
 						<label >Fecha de nacimiento 
-							<input type="date" className="fechanac" required/>
+							<input type="date" name="fechanac" required/>
 						</label>
 						<label >Edad 
-							<input type="text" className="edad" required/>
+							<input type="text" name="edad" required/>
 						</label>
 						<label >Sexo <br/>
 							H<input type="radio" name="sexo" className="nogrid" value="" required/> 
@@ -67,26 +58,26 @@ class DatosAlumnos extends Component {
 							</select>
 						</label>
 						<label >Calle 
-							<input type="text" className="calle" required/>
+							<input type="text" name="calle" required/>
 						</label> 
 						<label >Colonia 
-							<input type="text" className="colonia" required/>
+							<input type="text" name="colonia" required/>
 						</label> 
 						<label >N°      
-							<input type="text" className="numerocasa" required/>
+							<input type="text" name="numerocasa" required/>
 						</label> 
 						<label >Número de telefono 
-							<input type="tel" className="numerotelefono" />
+							<input type="tel" name="numerotelefono" />
 						</label> 
 						<label >Número de celular 
-							<input type="tel" className="numerocelular" />
+							<input type="tel" name="numerocelular" />
 						</label> 
 						<label >Correo 
-							<input type="email" className="correo" />
+							<input type="email" name="correo" />
 						</label> 
 						<label >Curp 
 							<input 	type="text" 
-									className="correo" 
+									name="correo" 
 									onChange={this.handle_change}/>
 						</label> 
 					

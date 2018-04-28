@@ -1,18 +1,27 @@
 import React, {Component} from 'react';
+import BuscarAlumno from './buscarAlumno'
+import '../../../css/InscripcionesBuscar.css';
+
 
 class BotonesInicio extends Component {
-   constructor()
-  {
-    super();
-    this.nombre=" Rafael Carbajal Galindo"
-  }
-	render (){
+	constructor()
+	{
+		super();
+		this.state={
+			numero:''
+		}
+		
+	}   
+
+
+
+render (){
 		return(
 
-		<div className = "caja">
-			<button type="button" className="btn btn-primary">{this.props.cualquiera}</button>
-			<button type="button" className="btn btn-primary">{this.props.cualquiera}</button>
-		</div>
+			<div className = "registroBI">
+				<BuscarAlumno nombre={this.props.nombreBotones[0]}/>
+				<button type="button" className="btn btn-primary botonesBI btn-sizeBI">{this.props.nombreBotones[1]}</button>
+			</div>
 		);
 	}
 }

@@ -1,0 +1,23 @@
+.registroBI input
+{
+    width: 19%!important;
+    display: inline-block!important;
+    margin-left: 3%!important;
+}
+
+.registroBI .BuscarAlumno
+{
+	width: 28%;
+	display:inline-block;
+}
+.registroBI .BuscarAlumno form
+{
+	margin:0%;
+	width: 250%;
+}
+.registroBI .BuscarAlumno form input
+{
+	margin:0% 1% 0% 0%!important;
+	
+	width: 50%;
+}
