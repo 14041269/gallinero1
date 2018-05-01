@@ -5,7 +5,8 @@ import DatosInscripciones from './datosInscripciones';
 import DatosTutor from './datosTutor.js';
 import Navigation from '../navigation';
 import '../../../css/Inscripciones.css';
-import jquery from '../../../jquery';
+import BuscarAlumno from './buscarAlumno';
+import jquery from 'jquery';
 window.$ = window.jQuery = jquery;
 
 
@@ -14,6 +15,7 @@ class Principal extends Component {
 	constructor()
 	{
 		super();
+
 		this.state={
 
 			datosAlumnos:[]
@@ -21,45 +23,82 @@ class Principal extends Component {
 		}
 	}
 
-	_buscarAlumno(nocontrol){
 
+	_searchStudent(nocontrol){
+		  alert(nocontrol);
           const datos = {
             "accion": "select",
             "nocontrol":nocontrol+""
           }
 
           jquery.ajax({
-            "url": "http://192.168.99.155/insertar.php",
+
+            "url": "http://localhost:80/insertar.php",
             "data": datos,
-            "method": "post",
+            "method": "GET",
+            "crossDomain": true,
+    		"dataType":'json',
+
             success: function(resp){
-              alert(resp);
-              //this.setState({mensajes: this.state.mensajes.concat([resp])});
-          }});
+            // JSON.parse(resp);
+             alert(resp.NOCONTROL);
+             //this.setState({mensajes: this.state.mensajes.concat([resp])});
+          	},
+          	error: function(resp)
+          	{
+          		alert();
+          	}
+      });
 
      }
 
+
+
+
 	render()
 	{
-
 		return(
 			<div>
 			<Navigation/>
-
-
 				<div className="contenedor-inscripciones">
-					<h1>Registro de inscripcion</h1>
 					
-					<BotonesInicio nombreBotones={["Buscar Alumno","Registrar nuevo Alumno"]} />
-					<h2>Datos del alumno</h2>
+					
+					{/* <BotonesInicio nombreBotones={["Buscar Alumno","Registrar nuevo Alumno"]} searchStudent={this._searchStudent.bind(this)}/> */}
+					<div className="container">
+						<div className="col-lg-12 well">
+							<h1>Registro de inscripcion</h1>	
+							<div className="row">
+								<div className="col-md-8">
+									<BuscarAlumno nombre={"Buscar"} searchStudent={this._searchStudent.bind(this)}/>
+								</div>
+								<div className="col-md-4">
+									<input type="button" className="btn btn-primary" value="Registrar nuevo alumno"/>
+								</div>
+							</div>
+						</div>
+					</div>
 					<DatosAlumnos />
-					<h2>Datos del tutor</h2>
-					<DatosTutor />
-					<h2>Datos escolares</h2>
-					<DatosInscripciones/>
-					<BotonesInicio nombreBotones={["Registrar","Limpiar"]}/>
-
 					
+					<DatosTutor />
+					
+					<DatosInscripciones/>
+
+					<div className="container">
+						<div className="col-lg-12">
+							<div className="row">
+								<div className="col-md-3"></div>
+								<div className="col-md-3">
+									<input type="submit" value="Registrar alumno" className="btn btn-secondary"/>
+								</div>
+								<div className="col-md-3">
+									<input type="submit" value="Limpiar" className="btn btn-secondary"/>
+								</div>
+								<div className="col-md-3"></div>
+							</div>
+						</div>
+					</div>
+					
+
 				</div>
 
 			</div>

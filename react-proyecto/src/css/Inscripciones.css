@@ -1,3 +1,4 @@
+
     .contenedor-inscripciones
     {
     height: 100%;
@@ -12,36 +13,45 @@
     overflow: hidden;
       
     }
-    .contenedor-inscripciones h1
+ /*  .contenedor-inscripciones h1
     {
         text-align: center;
         font-size: 1.8em;
         font-family: roboto;
-    }
-    .contenedor-inscripciones input[type=submit] {
+    }*/
+     .contenedor-inscripciones input[type=submit] {
       width: 100%;
       display: block;
       margin-bottom: 10px;
       position: relative;
     }
     .contenedor-inscripciones input,select{
-    width: 94%;
+    width: 100%;
     display: block;
     margin-top: 10px;
     margin-bottom: 10px;
     position: relative;
     }
-    label
+   label
     {
-      width: 33%;
+      width: 100%;
     }
+
     .nogrid
     {
       display:inline-block !important; 
       width: 9% !important;
 
     }
-    .move
+
+    .img-picker
+    {
+        width: 10em;
+        height: 10em;
+
+    }
+      /*  .move
+    }
     {
         width: 100%;
         text-align: center;
@@ -61,3 +71,4 @@ display: block;
 {
     width: 20%;
 }
+*/

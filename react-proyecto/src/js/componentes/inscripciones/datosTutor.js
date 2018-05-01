@@ -7,18 +7,55 @@ class DatosTutor extends Component{
 	{
 		return(
 
-				<div>
-						<label >Nombre
-							<input type="text" name="nombreTutor" className="nombre" required/>
-						</label>
+				<div className="container">
+					<div className="col-lg-12 well">
+					<h2>Datos del tutor</h2>
 
-						<label >Teléfono
-							<input type="tel" name="nombreTutor" className="nombre" required/>
-						</label>
+					<div className="row">
+						<div className="col-md-4">
+							<label >Nombre
+								<input type="text" name="nombreTutor" className="nombre" required/>
+							</label>
+						</div>
+						<div className="col-md-4">
+							<label >Apellido paterno
+								<input type="text" name="apTutor" className="nombre" required/>
+							</label>
+						</div>
+						<div className="col-md-4">
+							<label >Apellido materno
+								<input type="text" name="amTutor" className="nombre" required/>
+							</label>
+						</div>
+					</div>
 
-						<label >Correo
-							<input type="email" name="nombreTutor" className="nombre" required/>
-						</label>
+					<div className="row">
+						<div className="col-md-4">
+							<label >Teléfono
+								<input 
+								type="tel" 
+								name="telefonoTutor" 
+								
+								required/>
+							</label>
+						</div>
+						<div className="col-md-4">
+							<label >Correo
+								<input 
+								type="email" 
+								name="correoTutor" 
+								placeholder="ejemplo@gmail.com"
+								required/>
+							</label>
+						</div>
+						<div className="col-md-4"></div>
+					</div>
+						
+
+					
+
+						
+				</div>
 				</div>
 
 			);
