@@ -1,0 +1,15 @@
+
+.becas{
+    position: relative;
+    margin-top: 3em;
+    margin-left: 25%;
+    width:50%;
+    border: 1px solid black;
+}
+
+
+
+.lista:hover{
+    background: powderblue;
+    /* transition: all 1s; */
+}
