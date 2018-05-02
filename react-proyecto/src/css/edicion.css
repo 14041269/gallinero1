@@ -1,0 +1,84 @@
+.clickable{
+    cursor: pointer;   
+}
+.panel-heading div {
+    margin-top: -18px;
+    font-size: 15px;
+}
+.panel-heading div, span{
+    margin-left:5px;
+}
+.panel-body{
+    display: none;
+}
+.panel-heading h1, h2, h3 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.panel-heading  {
+    color: #fff;
+    background-color: #428bca;
+    border-color: #428bca;
+    padding: 2px 15px;
+    border-bottom: 1px solid transparent;
+    border-bottom-color: transparent;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    height: 90px;
+}
+.form-control{
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    float: right;
+    width: 200px;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+}
+.contenedorEdicion{
+   height: 100%;
+   padding: 5%;
+   max-width: 100%;
+   width: 100% !important;
+   background-color: #F7F7F7;
+   margin: 0%;
+   border-radius: 2px;
+   -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+   box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+   overflow: hidden;    
+}
+.contenedorEdicion h1
+{
+    text-align: center;
+    font-size: 2.8em;
+    font-family: roboto;
+}
+.contenedorEdicion h3
+{
+    text-align: justify;
+    font-size: 1.5em;
+    font-family: roboto;
+    font-style: italic;
+}
+.contenedorEdicion input[type=submit] {
+    width: 100%;
+    display: block;
+    margin-bottom: 10px;
+    position: relative;
+}
+.contenedorEdicion input,select{
+    width: 97%;
+    height: 25px;
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    position: relative;
+    /*padding: 12px;*/
+}
+.glyphicon{
+    padding-top: 17px;
+    padding-left: 10px;
+}
