@@ -18,7 +18,6 @@ class Edicion extends Component {
 				<Navigation/>
 				<div className="contenedorEdicion">
 					<h1>CONFIGURACIÓN DE ACCESO</h1>
-					<h2>Editar Usuario</h2>
 					<EditarUsuario/>
 				</div>
 			</div>

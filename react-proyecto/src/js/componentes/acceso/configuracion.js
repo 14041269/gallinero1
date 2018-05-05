@@ -19,14 +19,12 @@ class Configuracion extends Component {
 			<div>
 				<Navigation/>
 				<div className="contenedor">
-					<h1>CONFIGURACIÓN DE ACCESO</h1>
-					<h2>Crear Usuario</h2>
-					<h3>Datos Generales:</h3>
-					<DatosUsuario/>
-					<h3>Nuevo Usuario:</h3>
-					<Cuenta/>
-					<h2>Asignar Privilegio</h2>
-					<Privilegio/>
+					<div className="container">
+						<h1>CONFIGURACIÓN DE ACCESO</h1>
+							<DatosUsuario/>
+							<Cuenta/>
+							<Privilegio/>
+					</div>
 				</div>
 			</div>
 		);
