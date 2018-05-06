@@ -3,15 +3,26 @@ import React, { Component } from 'react';
 
 class DatosInscripciones extends Component {
 	
-	constructor()
+	constructor(props)
 	{
-		super();
+		super(props);
+		this.state={datosInscripciones:this.props.datosInscripciones}
 
 	}
+	onChangeHandler(event)
+	{
+		event.preventDefault();
+		this.setState({datosInscripciones:{[event.target.name]:event.target.value}});
 
+	}
 	render()
 	{
+		//this.setState({datosInscripciones:this.props.datosInscripciones});
+		
+
 		return(
+
+
 				<div className="container">
 				<div className="col-lg-12 well">
 					<h2>Datos escolares</h2>
@@ -19,7 +30,13 @@ class DatosInscripciones extends Component {
 						
 						<div className="col-md-4">
 							<label>
-								N° Control: <input type="text" name="nombre" required/>
+								N° Control: <input 
+								type="text" 
+								name="nombre"
+								onChange={this.onChangeHandler.bind(this)}
+								value={this.state.datosInscripciones.nocontrol} 
+								required
+								disabled/>
 							</label>
 						</div>
 

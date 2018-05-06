@@ -8,27 +8,29 @@ class BuscarAlumno extends Component{
 	{
 		super();
 		this.state={
-			nocontrol:''
+			nocontrol:{
+				valor:"",
+				validated:false}
 		}
-		//alert("buscaralumnos");
+		////("buscaralumnos");
 	}
 	_submitListener(event)
 	{
 		//console.log("ahsdfasd");
 		event.preventDefault();
-		let nocontrol =this._nocontrol.value;
-		this.props.searchStudent(nocontrol);
+		
+			let nocontrol =this._nocontrol.value;
+			this.props.searchStudent(nocontrol);
+	
+
 
 	}
 	onChangeHandler(event)
 	{
 		event.preventDefault();
-		this.setState({nocontrol:event.target.value});
-
-	}
-	nocontrolValidation()
-	{
+		this.setState({nocontrol:{valor:event.target.value,validated:false}});
 		
+
 	}
 
 	render()
@@ -45,7 +47,10 @@ class BuscarAlumno extends Component{
 									minLength="10"
 									name="nocontrol" ref={(input) => this._nocontrol = input} 
 									placeholder="N° de control"
-									onChangeHandler={this.onChangeHandler.bind(this)} 
+									onChange={this.onChangeHandler.bind(this)}
+									pattern="^[0-9]{10}"
+									title="Son necesarios puros números"
+									//onInvalid=setCustomValidity("solo numeros")
 									required/>
 								</div>
 								<div className="col-md-4">

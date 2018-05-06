@@ -2,6 +2,19 @@ import React, { Component } from 'react';
 
 
 class DatosTutor extends Component{
+	constructor(props)
+	{
+		super(props);
+		this.state={datosTutor:this.props.datosTutor};
+	}
+		onChangeHandler(event)	//Para actualizar el estado al momento de escribir algo en el campo 
+	{
+		event.preventDefault();
+
+		this.setState({datosTutor:{[event.target.name]: event.target.value }});
+		
+
+	}
 
 	render()
 	{
@@ -14,7 +27,13 @@ class DatosTutor extends Component{
 					<div className="row">
 						<div className="col-md-4">
 							<label >Nombre
-								<input type="text" name="nombreTutor" className="nombre" required/>
+								<input 
+								type="text" 
+								name="nombreTutor" 
+								className="nombre"
+								onChange={this.onChangeHandler.bind(this)}
+								value={this.state.datosTutor.nombre}  
+								required/>
 							</label>
 						</div>
 						<div className="col-md-4">
