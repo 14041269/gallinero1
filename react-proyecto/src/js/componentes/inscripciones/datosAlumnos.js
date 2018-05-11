@@ -54,7 +54,7 @@ class DatosAlumnos extends Component {
 	render()
 	{
 		////(this.props.nuevaConversacion);
-		alert("asdf");
+		
 		if(this.props.buscarExistente)
 		{
 		return(

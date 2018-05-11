@@ -44,12 +44,13 @@ class BuscarAlumno extends Component{
 									<input 
 									type="text"   
 									maxLength="10" 
+									className="form-control"
 									minLength="10"
 									name="nocontrol" ref={(input) => this._nocontrol = input} 
 									placeholder="N° de control"
 									onChange={this.onChangeHandler.bind(this)}
 									pattern="^[0-9]{10}"
-									title="Son necesarios puros números"
+									title="El número de control esta compuesto únicamente de caracteres numéricos y de longitud 10"
 									//onInvalid=setCustomValidity("solo numeros")
 									required/>
 								</div>
