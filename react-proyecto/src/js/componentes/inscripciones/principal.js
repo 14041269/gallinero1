@@ -52,7 +52,7 @@ activo=false;
 				carrera:""
 			},
 			activoBuscar:false,	
-			activoNuevo:false,
+			activoNuevo:true,
 			disabled:false,
 			disabledCarrera:true,
 			estadosmunicipios:[{estado:"Aguascalientes",municipio:["Aguascalientes","Asientos","Calvillo","Cosío","Jesús María","Pabellón de Arteaga","Rincón de Romos","San José de Gracia","Tepezalá","El Llano","Palo Alto","San Francisco de los Romo"
@@ -90,7 +90,7 @@ activo=false;
 			}],
 
 
-			nivelesescolares:[{ nivel:"Primaria",
+			nivelesescolares:[{ nivel:"Primaria",		//Estructura de los niveles
 								grados:[{grado:"primero",
 										grupos:[]},
 										{grado:"Segundo",
@@ -100,18 +100,20 @@ activo=false;
 								costoinscripcion:"",
 								costomensualidades:{colegiatura:"",
 													mantenimiento:"",
-													documentos:""},
-								carreras:[]
+													documentos:[{documento:"",precio:""}]},
+								carreras:[],
+								duracion:"" //especificada en meses
 
 								},
-								{ nivel:"Secundaria",
+								{nivel:"Secundaria",
 								grados:[{grado:"Primero",
 										grupos:[]}],
 								costoinscripcion:"",
 								costomensualidades:{colegiatura:"",
 													mantenimiento:"",
-													documentos:""},
-								carreras:[]
+													documentos:[{documento:"",precio:""}]},
+								carreras:[],
+								duracion:"" //especificada en meses
 
 								},
 								{ nivel:"Preparatoria",
@@ -120,8 +122,9 @@ activo=false;
 								costoinscripcion:"",
 								costomensualidades:{colegiatura:"",
 													mantenimiento:"",
-													documentos:""},
-								carreras:["Ingenieria en sistemas","Ingenieria mecatronica"]
+													documentos:[{documento:"",precio:""}]},
+								carreras:["Ingenieria en sistemas","Ingenieria mecatronica"],
+								duracion:"" //especificada en meses
 
 								}
 								
@@ -138,8 +141,9 @@ activo=false;
 	}
 
 
-	_searchStudent(nocontrol){
+	_searchStudent(nocontrol){		//función bindeada al componente de buscar para traer los datos del alumno y cargarlos
 		 // //(nocontrol);
+
           const datos = {
             "accion": "select",
             "nocontrol":nocontrol+""
@@ -154,6 +158,7 @@ activo=false;
     		"dataType":'json',
             success: function(resp){		//Recibe los datos de la base referente a los datos de los alumnos,tutor e inscripciones
             	////("sfsadf");
+            this.cleanInputs();
              this.setState({datosAlumnos:{img:resp.DATOSALUMNOS.IMG,
              								nombre:resp.DATOSALUMNOS.NOMBRE,
              								ap:resp.DATOSALUMNOS.AP,
@@ -180,9 +185,9 @@ activo=false;
              }});
              this.setState({datosInscripciones:{
 	             	nocontrol:resp.DATOSINSCRIPCIONES.NOCONTROL,
-					nivelescolar:"",
-					gradoescolar:"",
-					periodoescolar:"",
+					nivelescolar:resp.DATOSINSCRIPCIONES.NIVELESCOLAR,
+					gradoescolar:resp.DATOSINSCRIPCIONES.GRADOESCOLAR,
+					carrera:resp.DATOSINSCRIPCIONES.CARRERA,
 					solicitudbeca:""
              }});
             
@@ -201,8 +206,9 @@ activo=false;
      }
      getNumeroControl()	//Método para generar numero de control de acuerdo a los que haya en la base de datos
      {
+
      	const datos={
-     		"accion":"insert",
+     		"accion":"select",
 
      	}
      	jquery.ajax({
@@ -217,15 +223,30 @@ activo=false;
 	{
 		alert("Juan");
 		event.preventDefault();
-		const datos={
-     		"accion":"insert",
-     		"datosAlumnos":this.state.datosAlumnos,
-     		"datosTutor":this.state.datosTutor,
-     		"datosInscripciones":this.state.datosInscripciones
-
-     	}
+		let datos;
+		if(!this.state.activoBuscar)
+		{
+			 datos={
+	     		"accion":"insert",
+	     		"nuevo":true,
+	     		"nocontrol":this.datosInscripciones.nocontrol,
+	     		"datosAlumnos":this.state.datosAlumnos,
+	     		"datosTutor":this.state.datosTutor,
+	     		"datosInscripciones":this.state.datosInscripciones
+	     		//Faltan los datos de los pagos
+	     	}
+				
+		}else{
+			datos={
+				"nocontrol":this.datosInscripciones.nocontrol,
+	     		"accion":"insert",
+	     		"nuevo":false,
+	     		"datosInscripciones":this.state.datosInscripciones
+	     		//Faltan los datos de los pagos
+	     	}	
+		}
      	jquery.ajax({
-     		"url": "http://localhost:80/insertar.php",
+     		"url":"http://localhost:80/insertar.php",
             "data": datos,
             "method": "POST",
             "crossDomain": true,
@@ -251,6 +272,10 @@ activo=false;
 		if(objeto=="datosAlumnos")										//Para eventos que sucedan para los datos de los alumnos
 		{
 			copy.datosAlumnos[event.target.name] = event.target.value;   //Para cambiar el valor de algo especifoco
+			if(event.target.name=="fechanac")							//Para cambiar la edad cuando cambie la fecha de nacimiento
+			{
+			copy.datosAlumnos.edad=this.calculateEdad(new Date(event.target.value));
+			}
 		}
 		else if (objeto=="datosTutor")											//Para eventos que sucedan para los datos del tutor
 		{
@@ -350,12 +375,13 @@ activo=false;
 				nocontrol:"",
 				nivelescolar:"",
 				gradoescolar:"",
-				periodoescolar:"",
+				carrera:"",
 				solicitudbeca:""
 			},
 			activoBuscar:false,	
 			activoNuevo:true,
-			disabled:false
+			disabled:false,
+			disabledCarrera:false
 
 
 
@@ -393,6 +419,15 @@ activo=false;
 					
 					
 		    	}));
+    }
+    calculateEdad(today)
+    {
+    	
+    var diff_ms = Date.now() - today.getTime();
+    var age_dt = new Date(diff_ms); 
+ 
+    return Math.abs(age_dt.getUTCFullYear() - 1970);
+		
     }
     setGradosEscolares(nivelParam)
     {
@@ -504,7 +539,7 @@ activo=false;
     	return (
 
     	<div>
-    	<form method="get">
+    	<form method="post" onSubmit={this.onSubmitHandler.bind(this)}>
     				
     		{/*Datos del alumno*/}		
 			<div className="container">
@@ -513,14 +548,15 @@ activo=false;
 				<div className="row justify-content-md-center">
 					<div className="col-md-4"></div>
 					<div className="col-md-4 ">
-						<img src="../../../img/default.png" className="img-picker"/>
+						<img 
+						src="../../../img/default.png" 
+						className="img-picker"/>
 						<input 
 						type="file" 
 						name="img"
 						onChange={(e) => this.onChangeHandler(e,"datosAlumnos")}
 						value={this.state.datosAlumnos.img} 
-						required
-
+						
 						/>
 					</div>
 					<div className="col-md-4"></div>
@@ -625,7 +661,7 @@ activo=false;
 							className="datosAlumnos form-control select-picker"
 							onChange={(e) => this.onChangeHandler(e,"datosAlumnos")}
 							value={this.state.datosAlumnos.estado}
-							//onClick={this.onClickHandler.bind(this)}
+							required
 							>
 							{estados}
 
@@ -770,7 +806,8 @@ activo=false;
 									onChange={(e) => this.onChangeHandler(e,"datosTutor")}
 									value={this.state.datosTutor.nombre}
 									disabled={this.state.disabled}  
-									required/>
+									required
+									/>
 								</label>
 							</div>
 							<div className="col-md-4">
@@ -782,7 +819,8 @@ activo=false;
 									onChange={(e) => this.onChangeHandler(e,"datosTutor")} 
 									value={this.state.datosTutor.ap}
 									disabled={this.state.disabled} 
-									required/>
+									required
+									/>
 								</label>
 							</div>
 							<div className="col-md-4">
@@ -794,7 +832,8 @@ activo=false;
 									onChange={(e) => this.onChangeHandler(e,"datosTutor")} 
 									value={this.state.datosTutor.am}
 									disabled={this.state.disabled} 
-									required/>
+									required
+									/>
 								</label>
 							</div>
 						</div>
@@ -809,7 +848,8 @@ activo=false;
 									onChange={(e) => this.onChangeHandler(e,"datosTutor")} 
 									value={this.state.datosTutor.telefono}
 									disabled={this.state.disabled} 
-									required/>
+									required
+									/>
 								</label>
 							</div>
 							<div className="col-md-4">
@@ -822,7 +862,8 @@ activo=false;
 									onChange={(e) => this.onChangeHandler(e,"datosTutor")} 
 									value={this.state.datosTutor.correo}
 									disabled={this.state.disabled} 
-									required/>
+									required
+									/>
 								</label>
 							</div>
 							<div className="col-md-4"></div>
@@ -848,6 +889,7 @@ activo=false;
 									N° Control: <input 
 									type="text" 
 									name="nombre"
+									className="form-control"
 									onChange={(e) => this.onChangeHandler(e,"datosInscripciones")} 
 									value={this.state.datosInscripciones.nocontrol} 								
 									disabled
@@ -932,7 +974,7 @@ activo=false;
 									type="submit"  
 									value="Registrar alumno" 
 									className="btn btn-secondary"
-									onSubmit={this.onSubmitHandler.bind(this)}
+									
 									/>
 								</div>
 								<div className="col-md-3">

@@ -50,7 +50,12 @@
         height: 10em;
 
     }
+    .form-control
+    {
+        height: 34px!important;
+    }
       /*  .move
+    }
     }
     {
         width: 100%;
