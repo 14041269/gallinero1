@@ -7,7 +7,7 @@ class Navigation extends Component{
 		return(
 <div>
 				<nav className="navbar navbar-expand-lg navbar-light  mynavigation">
-				  <a className="navbar-brand" href="#">Navbar</a>
+				  
 				 
 				  <div className="collapse navbar-collapse" id="navbarSupportedContent">
 				    <ul className="navbar-nav mr-auto">

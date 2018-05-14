@@ -7,13 +7,16 @@ import DatosInscripciones from './datosInscripciones';
 import DatosTutor from './datosTutor.js';
 import Navigation from '../navigation';
 import '../../../css/Inscripciones.css';
+import ConfirmDialog from'../confirmation/confirmationDialog';
+import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
+//import Dialog from '../confirmation/confirmationDialog'
 import BuscarAlumno from './buscarAlumno';
 import jquery from 'jquery';
 window.$ = window.jQuery = jquery;
 
 
 class Principal extends Component {
-activo=false;
+
 	constructor()
 	{
 		super();
@@ -48,7 +51,7 @@ activo=false;
 				nocontrol:"",
 				nivelescolar:"",
 				gradoescolar:"",
-				solicitudbeca:"",
+				solicitudbeca:false,
 				carrera:""
 			},
 			activoBuscar:false,	
@@ -92,44 +95,118 @@ activo=false;
 
 			nivelesescolares:[{ nivel:"Primaria",		//Estructura de los niveles
 								grados:[{grado:"primero",
-										grupos:[]},
+										grupos:[],
+										materias:[]},
 										{grado:"Segundo",
-										grupos:[]},
+										grupos:[],
+										materias:[]},
 										{grado:"Tercero",
-										grupos:[]}],
-								costoinscripcion:"",
-								costomensualidades:{colegiatura:"",
-													mantenimiento:"",
+										grupos:[],
+										materias:[]}],
+								costoinscripcion:1200,
+								costomensualidades:{colegiatura:1200,
+													mantenimiento:2000,
 													documentos:[{documento:"",precio:""}]},
 								carreras:[],
-								duracion:"" //especificada en meses
+								duracion:12 //especificada en meses
 
 								},
 								{nivel:"Secundaria",
 								grados:[{grado:"Primero",
-										grupos:[]}],
-								costoinscripcion:"",
-								costomensualidades:{colegiatura:"",
-													mantenimiento:"",
+										grupos:[],
+										materias:[]}],
+								costoinscripcion:1200,
+								costomensualidades:{colegiatura:1000,
+													mantenimiento:1000,
 													documentos:[{documento:"",precio:""}]},
 								carreras:[],
-								duracion:"" //especificada en meses
+								duracion:12 //especificada en meses
 
 								},
 								{ nivel:"Preparatoria",
 								grados:[{grado:"Primer semestre",
-										grupos:[]}],
-								costoinscripcion:"",
-								costomensualidades:{colegiatura:"",
-													mantenimiento:"",
+										grupos:[],
+										materias:[]}],
+								costoinscripcion:1200,
+								costomensualidades:{colegiatura:1000,
+													mantenimiento:2000,
+													documentos:[{documento:"",precio:""}]},
+								carreras:[],
+								duracion:6 //especificada en meses
+
+								},
+								{ nivel:"Licenciatura",
+								grados:[{grado:"Primer semestre",
+										grupos:[],
+										materias:[]}],
+								costoinscripcion:1200,
+								costomensualidades:{colegiatura:1000,
+													mantenimiento:2000,
 													documentos:[{documento:"",precio:""}]},
 								carreras:["Ingenieria en sistemas","Ingenieria mecatronica"],
-								duracion:"" //especificada en meses
+								duracion:6 //especificada en meses
+
+								},
+								{ nivel:"Maestria",
+								grados:[{grado:"Primer cuatrimestre",
+										grupos:[],
+										materias:[]}],
+								costoinscripcion:1200,
+								costomensualidades:{colegiatura:1000,
+													mantenimiento:2000,
+													documentos:[{documento:"",precio:""}]},
+								carreras:["Ingenieria en sistemas","Ingenieria mecatronica"],
+								duracion:4 //especificada en meses
 
 								}
 								
 
-								]
+								],
+			pagos:{
+					pagoinscripcion:{
+						concepto:"inscripcion",
+						total:"",
+						pagado:false,
+						metodopago:"",
+						fecha:""
+					},
+					pagomensualidades:[]
+			}
+
+
+			/*pagos:{
+					pagoinscripcion:{
+						concepto:"inscripcion",
+						total:"",
+						pagado:false,
+						metodopago:"",
+						fecha:""
+					},
+					pagomensualidades:[{
+						concepto:"mensualidad1",
+						colegiatura:"",
+						mantenimiento:"",
+						documentos:[{
+							concepto:"",
+							cantidad:,
+							pago:,
+							fecha:
+
+						}],
+						pagosparciales:[{
+								numero:,
+								cantidad:,
+								metodo:,
+								fecha:,
+								intereses:,
+								descuento:,
+								pagado:false
+
+							}]
+
+
+				}]
+			} */
 
 
 
@@ -137,13 +214,14 @@ activo=false;
 
 		}
 		this._searchStudent=this._searchStudent.bind(this);
+
 	//	this.onSubmitHandler=this.onSubmitHandler.bind(this);
 	}
 
 
 	_searchStudent(nocontrol){		//función bindeada al componente de buscar para traer los datos del alumno y cargarlos
 		 // //(nocontrol);
-
+		 //alert("Buscar");
           const datos = {
             "accion": "select",
             "nocontrol":nocontrol+""
@@ -195,6 +273,7 @@ activo=false;
              				activoNuevo:false,
              				disabled:true,
              				disabledCarrera:true});
+             this.setPagos(this.state.datosInscripciones.nivelescolar);
 
           	}.bind(this),
           	error: function(resp)
@@ -216,9 +295,33 @@ activo=false;
             "data": datos,
             "method": "GET",
             "crossDomain": true,
-    		"dataType":'json'
+    		"dataType":'json',
+    		success:function(resp){
+
+    		},
+    		error:function(resp){
+
+    		}
+
      	});
      }
+    showConfirmAlert(){
+    	    confirmAlert({
+      title: 'Confirmar registrar nuevo alumno',
+      message: 'Esta seguro que desea registrar un nuevo alumno'+
+      'se eliminara toda la información capturada',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => alert('Click Yes')
+        },
+        {
+          label: 'No',
+          onClick: () => alert('Click No')
+        }
+      ]
+    })
+    }
     onSubmitHandler(event)	//Al enviar los datos, siempre sera insert
 	{
 		alert("Juan");
@@ -229,7 +332,7 @@ activo=false;
 			 datos={
 	     		"accion":"insert",
 	     		"nuevo":true,
-	     		"nocontrol":this.datosInscripciones.nocontrol,
+	     		"nocontrol":this.state.datosInscripciones.nocontrol,
 	     		"datosAlumnos":this.state.datosAlumnos,
 	     		"datosTutor":this.state.datosTutor,
 	     		"datosInscripciones":this.state.datosInscripciones
@@ -238,7 +341,7 @@ activo=false;
 				
 		}else{
 			datos={
-				"nocontrol":this.datosInscripciones.nocontrol,
+				"nocontrol":this.state.datosInscripciones.nocontrol,
 	     		"accion":"insert",
 	     		"nuevo":false,
 	     		"datosInscripciones":this.state.datosInscripciones
@@ -263,7 +366,7 @@ activo=false;
      	});	
 	}
 
-     onChangeHandler(event,objeto)
+     onChangeHandler(event,objeto)	
 	{
 		event.preventDefault();
 		
@@ -271,6 +374,8 @@ activo=false;
 		let copy = Object.assign({}, this.state);    
 		if(objeto=="datosAlumnos")										//Para eventos que sucedan para los datos de los alumnos
 		{
+			//console.log(event.target.name);
+			console.log(event.target.value);
 			copy.datosAlumnos[event.target.name] = event.target.value;   //Para cambiar el valor de algo especifoco
 			if(event.target.name=="fechanac")							//Para cambiar la edad cuando cambie la fecha de nacimiento
 			{
@@ -302,7 +407,7 @@ activo=false;
 			copy.datosInscripciones[event.target.name] = event.target.value;
 			if(event.target.name=="nivelescolar")
 			{
-
+				this.setPagos(event.target.value);
 				if(this.hasCarrera(event.target.value))
 				{
 					this.setState({disabledCarrera:true});
@@ -312,6 +417,11 @@ activo=false;
 					
 				}
 			}
+			else if(event.target.name=="solicitudbeca")
+     		{
+     			console.log(event.target.checked);
+     			copy.datosInscripciones[event.target.name]=event.target.checked ;
+     		}
 
 			this.setState({copy});
 		}
@@ -322,10 +432,15 @@ activo=false;
 
 	}
 
+
+
      onClickHandler(event,objeto)
      {
-     	
+     	this.showConfirmAlert();
+     	console.log(event.target.name);
+     	console.log(event.target.value);
   		event.preventDefault();
+  		let copy = Object.assign({}, this.state);
      	if(event.target.name=="registrarNuevo")
      	{
 
@@ -334,11 +449,24 @@ activo=false;
      		
      		
      	}
-     	if(objeto=="estados")
+		
+
+
+		if(objeto=="datosInscripciones")
      	{
 
-     		this.setState({datosAlumnos:{estado: event.target.value }});
+     		copy.datosInscripciones[event.target.name]=event.target.value ;
+     		if(event.target.name=="solicitudbeca")
+     		{
+     			console.log(event.target.checked);
+     			copy.datosInscripciones[event.target.name]=event.target.checked ;
+     		}
      	}
+
+
+     	this.setState({copy});
+     	console.log("Esta checado: "+this.state.datosInscripciones.solicitudbeca);
+
 
 
      }
@@ -354,7 +482,7 @@ activo=false;
 				am:"",
 				fechanac:"",
 				edad:"",
-				sexo:"",
+				sexo:"H",
 				estado:"Durango",
 				municipio:"",
 				calle:"",
@@ -378,6 +506,16 @@ activo=false;
 				carrera:"",
 				solicitudbeca:""
 			},
+			pagos:{
+					pagoinscripcion:{
+						concepto:"inscripcion",
+						total:"",
+						pagado:false,
+						metodopago:"",
+						fecha:""
+					},
+					pagomensualidades:[]
+			},
 			activoBuscar:false,	
 			activoNuevo:true,
 			disabled:false,
@@ -386,6 +524,10 @@ activo=false;
 
 
 		});
+    }
+    calculatePeriodo(duracion)
+    {
+
     }
     hasCarrera(nivelParam)		//Permite saber si un nivel escolar retorna un true o false si tien o no carreras respectivamente para desactivar el select de carreras
     {
@@ -419,6 +561,47 @@ activo=false;
 					
 					
 		    	}));
+    }
+
+    setPagos(nivelParam)	//Función para calcular todos los pagos del nivel correspondiente
+    {
+
+    	//console.vm.$log([keyPath-optional])
+    	let cuotaInscripcion;
+    	let cuotaColegiatura;
+    	let cuotaMantenimieto;
+    	let duracion=0;
+    	let copy = Object.assign({},this.state);
+    	this.state.nivelesescolares.map((nivelMap,i) =>{
+    		if(nivelParam==nivelMap.nivel)
+    		{
+    			cuotaInscripcion=nivelMap.costoinscripcion;
+    			cuotaColegiatura=nivelMap.costomensualidades.colegiatura;
+    			cuotaMantenimieto=nivelMap.costomensualidades.mantenimiento;
+    			duracion=nivelMap.duracion;	
+    		}
+    	});
+    	copy.pagos.pagomensualidades=[];
+    	copy.pagos.pagoinscripcion.total=cuotaInscripcion;
+    	console.log(duracion);
+    	for (var i = 0; i < duracion; i++) {
+    		copy.pagos.pagomensualidades.push(
+    			{
+						concepto:"mensualidad "+(i+1),
+						colegiatura:cuotaColegiatura,
+						mantenimiento:cuotaMantenimieto,
+						intereses:0,
+						descuento:0,
+						documentos:[],
+						pagosparciales:[]
+				}
+    		);
+    	}
+
+    	this.setState({copy});
+    	console.log(this.state.pagos);
+
+
     }
     calculateEdad(today)
     {
@@ -549,8 +732,9 @@ activo=false;
 					<div className="col-md-4"></div>
 					<div className="col-md-4 ">
 						<img 
-						src="../../../img/default.png" 
-						className="img-picker"/>
+						src="./default.png" 
+						className="img-picker"
+						/>
 						<input 
 						type="file" 
 						name="img"
@@ -633,9 +817,9 @@ activo=false;
 							name="sexo" 
 							className="nogrid datosAlumnos form-control" 
 							onChange={(e) => this.onChangeHandler(e,"datosAlumnos")}
-							value={this.state.datosAlumnos.sexo}
+							value="H"
 							disabled={this.state.disabled}
-							checked="checked" 
+							checked={this.state.datosAlumnos.sexo==='H'} 
 							required 
 							/> 
 							M<input 
@@ -643,7 +827,8 @@ activo=false;
 							name="sexo" 
 							className="nogrid datosAlumnos form-control" 
 							onChange={(e) => this.onChangeHandler(e,"datosAlumnos")}
-							value={this.state.datosAlumnos.sexo}
+							value="M"
+							checked={this.state.datosAlumnos.sexo==='M'}
 							disabled={this.state.disabled}
 							required 
 							/> 
@@ -661,6 +846,7 @@ activo=false;
 							className="datosAlumnos form-control select-picker"
 							onChange={(e) => this.onChangeHandler(e,"datosAlumnos")}
 							value={this.state.datosAlumnos.estado}
+							disabled={this.state.disabled}
 							required
 							>
 							{estados}
@@ -884,7 +1070,7 @@ activo=false;
 						<h2>Datos escolares</h2>
 						<div className="row">
 							
-							<div className="col-md-4">
+							{/*<div className="col-md-4">
 								<label>
 									N° Control: <input 
 									type="text" 
@@ -896,7 +1082,7 @@ activo=false;
 									//required
 									/>
 								</label>
-							</div>
+							</div>*/}
 
 							<div className="col-md-4">
 							  	<label>	Nivel escolar: 
@@ -907,6 +1093,7 @@ activo=false;
 									value={this.state.datosInscripciones.nivelescolar}
 									required
 									>
+									<option value="">Seleccione nivel escolar</option>
 									{nivelesescolares} 
 									</select>
 								</label>
@@ -930,10 +1117,7 @@ activo=false;
 									</select>
 								</label>
 							</div>
-						</div>
-						<div className="row">
-							
-							<div className="col-md-4">
+								<div className="col-md-4">
 							  	<label>	Especialidad o Carrera: 
 									<select 
 									className="form-control"
@@ -950,13 +1134,20 @@ activo=false;
 									</select>
 								</label>
 						  	</div>
+						</div>
+						<div className="row">
+							
+						
 
 							<div className="col-md-4">
 								<label>
 									Solicitud de beca: <input 
 									type="checkbox" 
 									className="nogrid" 
-									name="nombre" />
+									name="solicitudbeca" 
+									onChange={(e)=> this.onChangeHandler(e,"datosInscripciones")}
+									checked={this.state.datosInscripciones.solicitudbeca}
+									/>
 								</label>
 							</div>
 						</div>
@@ -964,7 +1155,7 @@ activo=false;
 				</div>
 
 {/*Datos de la inscripción*/}	
-
+				<ConfirmDialog />
 					<div className="container">
 						<div className="col-lg-12">
 							<div className="row">
@@ -1015,7 +1206,9 @@ activo=false;
 							<h1>Registro de inscripcion</h1>	
 							<div className="row">
 								<div className="col-md-8">
-									<BuscarAlumno nombre={"Buscar"} searchStudent={this._searchStudent.bind(this)}/>
+									<BuscarAlumno 
+									nombre={"Buscar"} 
+									searchStudent={this._searchStudent.bind(this)}/>
 								</div>
 								<div className="col-md-4">
 									<input type="button" className="btn btn-primary"
