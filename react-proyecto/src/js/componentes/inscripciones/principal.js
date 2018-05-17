@@ -8,6 +8,7 @@ import DatosTutor from './datosTutor.js';
 import Navigation from '../navigation';
 import '../../../css/Inscripciones.css';
 import ConfirmDialog from'../confirmation/confirmationDialog';
+import { Page, Text, View, Document, StyleSheet } from 'react-pdf';
 import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 //import Dialog from '../confirmation/confirmationDialog'
 import BuscarAlumno from './buscarAlumno';
@@ -17,10 +18,12 @@ window.$ = window.jQuery = jquery;
 
 class Principal extends Component {
 
+		
 	constructor()
 	{
 		super();
-
+		
+		var fechaInscripcion=this.getDate();
 		this.state={
 
 			datosAlumnos:{
@@ -51,13 +54,17 @@ class Principal extends Component {
 				nocontrol:"",
 				nivelescolar:"",
 				gradoescolar:"",
+				grupo:"",
+				periodo:"",
 				solicitudbeca:false,
-				carrera:""
+				carrera:"",
+				fechainscripcion:{fechaInscripcion}
 			},
-			activoBuscar:false,	
-			activoNuevo:true,
-			disabled:false,
-			disabledCarrera:true,
+			activoBuscar:false,	//se envia
+			activoNuevo:true,	// no se envia
+			disabled:false,		//no se envia
+			disabledCarrera:true,	//no se envia
+			activoPeriodo:false,	//no se envia
 			estadosmunicipios:[{estado:"Aguascalientes",municipio:["Aguascalientes","Asientos","Calvillo","Cosío","Jesús María","Pabellón de Arteaga","Rincón de Romos","San José de Gracia","Tepezalá","El Llano","Palo Alto","San Francisco de los Romo"
 			]},{estado:"Baja California",municipio:["Ensenada","Mexicali","Tecate","Tijuana","Playas de Rosarito"
 			]},{estado:"Baja California Sur",municipio:["Comondú","Ciudad Constitución","Mulegé","Santa Rosalía","La Paz","Los Cabos","San José del Cabo","Loreto"
@@ -108,7 +115,11 @@ class Principal extends Component {
 													mantenimiento:2000,
 													documentos:[{documento:"",precio:""}]},
 								carreras:[],
-								duracion:12 //especificada en meses
+								periodos:[{
+									periodo:"Agosto-Junio",
+									fechainicio:"2018-08-16",
+									fechafinal:"2019-06-16"
+								}]
 
 								},
 								{nivel:"Secundaria",
@@ -120,7 +131,11 @@ class Principal extends Component {
 													mantenimiento:1000,
 													documentos:[{documento:"",precio:""}]},
 								carreras:[],
-								duracion:12 //especificada en meses
+								periodos:[{
+									periodo:"Enero-Junio",
+									fechainicio:"2018-08-16",
+									fechafinal:"2019-06-16"
+								}]
 
 								},
 								{ nivel:"Preparatoria",
@@ -132,7 +147,11 @@ class Principal extends Component {
 													mantenimiento:2000,
 													documentos:[{documento:"",precio:""}]},
 								carreras:[],
-								duracion:6 //especificada en meses
+								periodos:[{
+									periodo:"Enero-Junio",
+									fechainicio:"2018-01-16",
+									fechafinal:"2018-06-16"
+								}]
 
 								},
 								{ nivel:"Licenciatura",
@@ -144,7 +163,11 @@ class Principal extends Component {
 													mantenimiento:2000,
 													documentos:[{documento:"",precio:""}]},
 								carreras:["Ingenieria en sistemas","Ingenieria mecatronica"],
-								duracion:6 //especificada en meses
+								periodos:[{
+									periodo:"Enero-Junio",
+									fechainicio:"2018-01-16",
+									fechafinal:"2018-06-16"
+								}]
 
 								},
 								{ nivel:"Maestria",
@@ -156,7 +179,11 @@ class Principal extends Component {
 													mantenimiento:2000,
 													documentos:[{documento:"",precio:""}]},
 								carreras:["Ingenieria en sistemas","Ingenieria mecatronica"],
-								duracion:4 //especificada en meses
+								periodos:[{
+									periodo:"Enero-Junio",
+									fechainicio:"2018-01-16",
+									fechafinal:"2018-06-16"
+								}]
 
 								}
 								
@@ -214,6 +241,7 @@ class Principal extends Component {
 
 		}
 		this._searchStudent=this._searchStudent.bind(this);
+		this.showAlertNumControl=this.showAlertNumControl.bind(this);
 
 	//	this.onSubmitHandler=this.onSubmitHandler.bind(this);
 	}
@@ -222,6 +250,8 @@ class Principal extends Component {
 	_searchStudent(nocontrol){		//función bindeada al componente de buscar para traer los datos del alumno y cargarlos
 		 // //(nocontrol);
 		 //alert("Buscar");
+		
+		var fechaInscripcion=this.getDate();
           const datos = {
             "accion": "select",
             "nocontrol":nocontrol+""
@@ -229,7 +259,7 @@ class Principal extends Component {
 
           jquery.ajax({
 
-            "url": "http://localhost:80/insertar.php",
+            "url": "http://localhost:8080/insertar.php",
             "data": datos,
             "method": "GET",
             "crossDomain": true,
@@ -266,14 +296,18 @@ class Principal extends Component {
 					nivelescolar:resp.DATOSINSCRIPCIONES.NIVELESCOLAR,
 					gradoescolar:resp.DATOSINSCRIPCIONES.GRADOESCOLAR,
 					carrera:resp.DATOSINSCRIPCIONES.CARRERA,
-					solicitudbeca:""
+					grupo:"",
+					periodo:"",
+					solicitudbeca:false,
+					fechainscripcion:fechaInscripcion
              }});
             
              this.setState({activoBuscar:true,
              				activoNuevo:false,
              				disabled:true,
-             				disabledCarrera:true});
-             this.setPagos(this.state.datosInscripciones.nivelescolar);
+             				disabledCarrera:true,
+							activoPeriodo:false,});
+            
 
           	}.bind(this),
           	error: function(resp)
@@ -291,7 +325,7 @@ class Principal extends Component {
 
      	}
      	jquery.ajax({
-     		"url": "http://localhost:80/insertar.php",
+     		"url": "http://localhost:8080/insertar.php",
             "data": datos,
             "method": "GET",
             "crossDomain": true,
@@ -305,67 +339,106 @@ class Principal extends Component {
 
      	});
      }
-    showConfirmAlert(){
-    	    confirmAlert({
-      title: 'Confirmar registrar nuevo alumno',
+    showAlertNumControl(información){
+   
+   	let datos={
+      title: 'Confirmar registrar nuevo alumno '+información.NOCONTROL+" se descargara un PDF con información", 
       message: 'Esta seguro que desea registrar un nuevo alumno'+
       'se eliminara toda la información capturada',
       buttons: [
         {
-          label: 'Yes',
-          onClick: () => alert('Click Yes')
-        },
-        {
-          label: 'No',
-          onClick: () => alert('Click No')
+          label: 'Hecho',
+          onClick: ()=>{} 
         }
       ]
-    })
+    };
+    confirmAlert(datos);
+    }
+    createPDF(informacion){
+
+    	const styles = StyleSheet.create({
+		  page: {
+		    flexDirection: 'row',
+		    backgroundColor: '#E4E4E4'
+		  },
+		  section: {
+		    margin: 10,
+		    padding: 10,
+		    flexGrow: 1
+		  }
+		});
+    	    
+		<Document>
+		    <Page size="A4" style={styles.page}>
+		      <View style={styles.section}>
+		        <Text>Section #1</Text>
+		      </View>
+		      <View style={styles.section}>
+		        <Text>Section #2</Text>
+		      </View>
+		    </Page>
+		</Document>
     }
     onSubmitHandler(event)	//Al enviar los datos, siempre sera insert
 	{
-		alert("Juan");
+		
 		event.preventDefault();
+		
+		/**/
+		
+
+		//console.log(copy.datosInscripciones.fechaInscripcion);
+		//this.setState({});
 		let datos;
 		if(!this.state.activoBuscar)
 		{
 			 datos={
-	     		"accion":"insert",
+	     		"accion":"insert alumno",
 	     		"nuevo":true,
 	     		"nocontrol":this.state.datosInscripciones.nocontrol,
 	     		"datosAlumnos":this.state.datosAlumnos,
 	     		"datosTutor":this.state.datosTutor,
-	     		"datosInscripciones":this.state.datosInscripciones
+	     		"datosInscripciones":this.state.datosInscripciones,
+	     		"pagos":this.state.pagos,
+	     		"activoPeriodo":this.state.activoPeriodo
 	     		//Faltan los datos de los pagos
 	     	}
 				
 		}else{
 			datos={
 				"nocontrol":this.state.datosInscripciones.nocontrol,
-	     		"accion":"insert",
+	     		"accion":"insert alumno",
 	     		"nuevo":false,
-	     		"datosInscripciones":this.state.datosInscripciones
+	     		"datosInscripciones":this.state.datosInscripciones,
+	     		"pagos":this.state.pagos,
+	     		"activoPeriodo":this.state.activoPeriodo
 	     		//Faltan los datos de los pagos
 	     	}	
 		}
      	jquery.ajax({
-     		"url":"http://localhost:80/insertar.php",
+     		"url":"http://localhost:8080/insertarAlumno.php",
             "data": datos,
             "method": "POST",
             "crossDomain": true,
     		"dataType":'json',
     		success : function(resp)
     		{
-
-    		},
+    			//Repuesta para recibir el número de control
+    			//1: insercion realizada, numcontrol:""
+    			alert("asdfasd");
+    			this.showAlertNumControl(resp);
+    		}.bind(this),
     		error : function(resp)
     		{
-
+    			alert(resp);
     		}
 
      	});	
 	}
+	getNumControl()
+	{
 
+	}
      onChangeHandler(event,objeto)	
 	{
 		event.preventDefault();
@@ -407,7 +480,11 @@ class Principal extends Component {
 			copy.datosInscripciones[event.target.name] = event.target.value;
 			if(event.target.name=="nivelescolar")
 			{
-				this.setPagos(event.target.value);
+				console.log("VALOR DEL CHANGE: "+event.target.value);
+				
+				copy.datosInscripciones.gradoescolar="";
+				copy.datosInscripciones.periodo="";
+				
 				if(this.hasCarrera(event.target.value))
 				{
 					this.setState({disabledCarrera:true});
@@ -416,11 +493,18 @@ class Principal extends Component {
 					this.setState({disabledCarrera:false});
 					
 				}
+				this.setState({copy});
+			}else if(event.target.name=="periodo"){
+				
+				//Se generan los pagos una vez que se selecciona el periodo
+				this.setState({copy});
+				this.setPagos(this.state.datosInscripciones.nivelescolar);
 			}
 			else if(event.target.name=="solicitudbeca")
      		{
      			console.log(event.target.checked);
      			copy.datosInscripciones[event.target.name]=event.target.checked ;
+     			this.setState({copy});
      		}
 
 			this.setState({copy});
@@ -433,21 +517,37 @@ class Principal extends Component {
 	}
 
 
+	calculateFechaLimite(duracion)
+	{
+		var d = new Date();
+		var weekday = new Array(7);
+		weekday[0] =  "Sunday";
+		weekday[1] = "Monday";
+		weekday[2] = "Tuesday";
+		weekday[3] = "Wednesday";
+		weekday[4] = "Thursday";
+		weekday[5] = "Friday";
+		weekday[6] = "Saturday";
+
+		var n = weekday[d.getDay()];
+	}
 
      onClickHandler(event,objeto)
      {
-     	this.showConfirmAlert();
+     	//this.showConfirmAlert();
      	console.log(event.target.name);
      	console.log(event.target.value);
   		event.preventDefault();
   		let copy = Object.assign({}, this.state);
+
      	if(event.target.name=="registrarNuevo")
      	{
+			//let valor=this.showConfirmAlert();
+			//console.log(valor);
+			
 
-     		
-     		this.cleanInputs();
-     		
-     		
+     		this.cleanInputs();     		
+			
      	}
 		
 
@@ -470,9 +570,17 @@ class Principal extends Component {
 
 
      }
-
+     getDate()
+     {
+     	var date=new Date();
+		var fechaInscripcion=date.getDate()+"/"+
+												(date.getMonth()+1)+"/"+
+												date.getFullYear();
+		return fechaInscripcion;
+     }
     cleanInputs()	//Limpiar todos los inputs tanto en el caso de limpiar como en el de registrar nuevo alumno
     {
+    	let fecha=this.getDate();
     	this.setState({
 
 			datosAlumnos:{
@@ -504,7 +612,10 @@ class Principal extends Component {
 				nivelescolar:"",
 				gradoescolar:"",
 				carrera:"",
-				solicitudbeca:""
+				grupo:"",
+				periodo:"",
+				solicitudbeca:"",
+				fechainscripcion:fecha
 			},
 			pagos:{
 					pagoinscripcion:{
@@ -519,15 +630,37 @@ class Principal extends Component {
 			activoBuscar:false,	
 			activoNuevo:true,
 			disabled:false,
-			disabledCarrera:false
+			disabledCarrera:false,
+			activoPeriodo:false,
 
 
 
 		});
     }
-    calculatePeriodo(duracion)
+    calculateDuracionPeriodo(fechaInicio,fechaFinal)	//Calcula la duración de un periodo escolar dadas dos fechas
     {
+    	let fechaI=new Date(fechaInicio);
+    	let fechaF=new Date(fechaFinal);
+    	let final=new Date(fechaI.getFullYear+"-"+"12"+"-"+"01");
+    	let inicio=new Date(fechaF.getFullYear+"-"+"01"+"-"+"01");
+    	let duracionPeriodo=0
+    	console.log("Fecha incio: "+fechaI.getMonth());
+    	console.log("Fecha final: "+fechaF.getMonth());
+    	console.log("Inicio de año: "+inicio.getMonth());
+    	console.log("final de año: "+final.getMonth());
+    	console.log(fechaI);
+    	if(fechaI.getFullYear()!=fechaF.getFullYear())
+    	{
+    		let dura1=(final.getMonth()-fechaI.getMonth())+1;
 
+    		let dura2=(fechaF.getMonth()-inicio.getMonth())+1;
+    		duracionPeriodo=dura1+dura2;
+    	}else{
+    		 duracionPeriodo = fechaF.getMonth()-fechaI.getMonth()+1;
+    	}
+
+    	
+    	return duracionPeriodo;
     }
     hasCarrera(nivelParam)		//Permite saber si un nivel escolar retorna un true o false si tien o no carreras respectivamente para desactivar el select de carreras
     {
@@ -565,12 +698,14 @@ class Principal extends Component {
 
     setPagos(nivelParam)	//Función para calcular todos los pagos del nivel correspondiente
     {
-
+    	console.log("nivelPARAM: "+nivelParam );
     	//console.vm.$log([keyPath-optional])
     	let cuotaInscripcion;
     	let cuotaColegiatura;
     	let cuotaMantenimieto;
     	let duracion=0;
+    	let fechaInicio="";
+    	let fechaFinal="";
     	let copy = Object.assign({},this.state);
     	this.state.nivelesescolares.map((nivelMap,i) =>{
     		if(nivelParam==nivelMap.nivel)
@@ -578,7 +713,17 @@ class Principal extends Component {
     			cuotaInscripcion=nivelMap.costoinscripcion;
     			cuotaColegiatura=nivelMap.costomensualidades.colegiatura;
     			cuotaMantenimieto=nivelMap.costomensualidades.mantenimiento;
-    			duracion=nivelMap.duracion;	
+    			nivelMap.periodos.map((periodoMap,i) => {
+    			console.log("PERIODO ACTUAL: "+periodoMap.periodo);
+    			if(periodoMap.periodo==copy.datosInscripciones.periodo)
+    			{
+
+    				duracion=this.calculateDuracionPeriodo(periodoMap.fechainicio,periodoMap.fechafinal);	
+    				fechaInicio=periodoMap.fechainicio;
+    				fechaFinal=periodoMap.fechafinal;
+    				console.log("DURACION: "+duracion);
+    			}	
+    			});
     		}
     	});
     	copy.pagos.pagomensualidades=[];
@@ -592,8 +737,9 @@ class Principal extends Component {
 						mantenimiento:cuotaMantenimieto,
 						intereses:0,
 						descuento:0,
-						documentos:[],
-						pagosparciales:[]
+						pagosparciales:[],
+						fechalimite:"",
+						pagado:false
 				}
     		);
     	}
@@ -639,8 +785,36 @@ class Principal extends Component {
 					
 		    	});
     			
+    }    
+   setPeriodosEscolares(nivelParam)
+    {
+    	 
+    		
+    	
+    			return this.state.nivelesescolares.map((nivel,i)=>{
+					//console.log(this.state.datosAlumnos);
+					if(nivel.nivel==nivelParam)
+					{
+					const options=[];
+					for (let a =0; a < nivel.periodos.length ; a++) {
+						let periodo=nivel.periodos[a].periodo;
+						
+						options[a]=
+						(<option 
+			    		value={periodo} 
+			    		key={a} 
+			    		>
+			    			{periodo}
+			    		</option>)					
+					}
+					return options;
+
+					}					
+					
+		    	});
+    			
     }
-    setCarreras(nivelParam)
+    setCarreras(nivelParam)	//Retorna el los option tag por cada carrera del nivel enviado.
     {
     	return(
     		this.state.nivelesescolares.map((nivelescolar,i)=>{
@@ -667,7 +841,7 @@ class Principal extends Component {
 
     		));
     }
-    setNivel()
+    setNivel()	//Retorna el mismo numero de option tag para cada nivel registrado en la base
     {
     	
     	return(
@@ -691,7 +865,7 @@ class Principal extends Component {
     {
     	
     			return this.state.estadosmunicipios.map((estado,i)=>{
-					//console.log(this.state.datosAlumnos);
+					
 					if(estado.estado==edo)
 					{
 					const options=[];
@@ -718,6 +892,7 @@ class Principal extends Component {
     	const nivelesescolares=this.setNivel();
     	const gradosescolares=this.setGradosEscolares(this.state.datosInscripciones.nivelescolar);
     	const carreras = this.setCarreras(this.state.datosInscripciones.nivelescolar);
+    	const periodos =this.setPeriodosEscolares(this.state.datosInscripciones.nivelescolar);
     	//const gradoescolar=this.set
     	return (
 
@@ -1138,7 +1313,20 @@ class Principal extends Component {
 						<div className="row">
 							
 						
-
+							<div className="col-md-4">
+							  	<label>	Periodo Escolar: 
+									<select 
+									className="form-control"
+									name="periodo"
+									onChange={(e) => this.onChangeHandler(e,"datosInscripciones")}
+									value={this.state.datosInscripciones.periodo}
+									required
+									>
+									<option value="">Seleccione periodo escolar</option>
+									{periodos} 
+									</select>
+								</label>
+						  	</div>
 							<div className="col-md-4">
 								<label>
 									Solicitud de beca: <input 
@@ -1155,7 +1343,7 @@ class Principal extends Component {
 				</div>
 
 {/*Datos de la inscripción*/}	
-				<ConfirmDialog />
+				
 					<div className="container">
 						<div className="col-lg-12">
 							<div className="row">
@@ -1165,12 +1353,11 @@ class Principal extends Component {
 									type="submit"  
 									value="Registrar alumno" 
 									className="btn btn-secondary"
-									
 									/>
 								</div>
 								<div className="col-md-3">
 									<input 
-									type="submit" 
+									type="button" 
 									value="Limpiar"
 									className="btn btn-secondary"/>
 								</div>
