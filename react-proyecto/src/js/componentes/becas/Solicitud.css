@@ -1,0 +1,28 @@
+textarea{
+    resize: none;
+    padding: 1%;
+    
+}
+.contenedor{
+    position: relative;
+    background: paleturquoise;
+    width: 80%;
+    left: 10%;
+    padding:.3rem;
+    margin-top:2em; 
+}
+
+.dato{
+    background: whitesmoke;
+    border: 1px solid whitesmoke;
+    border-radius: 15%;
+    margin: .125rem;
+    display: inline-block;
+    width: auto;
+}
+
+.imagen{
+    position: relative;
+    left: 40%;
+    width: 2rem;
+}

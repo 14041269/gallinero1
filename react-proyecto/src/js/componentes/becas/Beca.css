@@ -1,0 +1,51 @@
+a{
+    color:black;
+}
+span{
+    display: inline-block;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    padding: .5em;
+    margin-bottom: .3em;
+}
+
+.lista{
+
+    background: rgb(233, 227, 227);
+}
+.lista:hover{
+    background: powderblue;
+    /* transition: all .05s; */
+}
+
+.nombre{
+    width: 60%;
+    text-align: center;
+    margin: 1%;
+}
+
+.estado{
+    width: 20%;
+    text-align: center;
+    margin: 1%;
+}
+
+.aceptada{
+    background: limegreen;
+    border-radius: 5%;
+}
+
+.rechazada{
+    background: crimson;
+    border-radius: 5%;
+}
+
+.pendiente{
+    background: goldenrod;
+    border-radius: 5%;
+}
+
+.numero{
+    width: 5%;
+    text-align: center;
+     margin: 1%;
+}
