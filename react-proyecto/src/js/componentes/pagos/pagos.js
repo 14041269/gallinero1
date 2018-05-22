@@ -1,23 +1,23 @@
 import React, { Component } from 'react';
 import Navigation from '../navigation';
 import '../../../css/pagosTabla.css';
-
+import Modal from 'react-awesome-modal';
+import BuscarAlumno from '../inscripciones/buscarAlumno';
+import jquery from 'jquery';
+window.$ = window.jQuery = jquery;
 
 class Pagos extends Component {
 
-	constructor()
+	constructor(props)
 	{
-		var TotalS;
-		var TotalInteres;
-		var SumTotal;
-		var SumaParciales;
 
-		super();
+		super(props);
 		this.state={
+			visible : false,
 				datosAlumno:{
-						nombre:"Pepe",
-						ap:"Patea",
-						am:"Traseros"
+						nombre:"Alan",
+						ap:"Yañez",
+						am:"Sanchez"
 				},
 				datosInscripciones:{
 					noControl:"14041331",
@@ -102,7 +102,7 @@ class Pagos extends Component {
 		return(
 			this.state.pagos.pagosMensualidad.map((mensualidad,i)=>{
 				var descuento=mensualidad.descuento;
-return	<tr>
+return	<tr onClick={() => this.openModal()}>
 					<th>{mensualidad.concepto}</th>
 					<th>{this.calcularTotal(mensualidad.colegiatura,mensualidad.mantenimiento)}</th>
 					<th>{mensualidad.fechaLimite}	</th>
@@ -132,21 +132,56 @@ return	<tr>
  		);
  	}
 
+	openModal() {
+        this.setState({
+            visible : true
+        });
+    }
+
+    closeModal() {
+        this.setState({
+            visible : false
+        });
+    }
+
+		_searchStudent(nocontrol){
+				alert(nocontrol);
+						const datos = {
+							"accion": "select",
+							"nocontrol":nocontrol+""
+						}
+
+						jquery.ajax({
+
+							"url": "http://localhost:80/insertar.php",
+							"data": datos,
+							"method": "GET",
+							"crossDomain": true,
+					"dataType":'json',
+
+							success: function(resp){
+							// JSON.parse(resp);
+							 alert(resp.NOCONTROL);
+							 //this.setState({mensajes: this.state.mensajes.concat([resp])});
+							},
+							error: function(resp)
+							{
+								alert();
+							}
+				});
+
+			 }
 
 	render()
 	{
     return(
 			<div>
 			<Navigation/>
-			<div>
-				<section className="container">
-					<h2>Alumno: </h2>
-					<h2>No. de control: </h2>
-					<input type="text" placeholder="Aqui buscas al alumno"/>
-					<form>
-					  <input type="radio" name="seleccionPagos"  />Estado de cuenta.
-					  <input type="radio" name="seleccionPagos" checked={true} />Mensualidades.
-					</form><br/>
+			<div className="container container2" >
+				<section>
+					<BuscarAlumno nombre={"Buscar"} searchStudent={this._searchStudent.bind(this)}/>
+					<h2>Alumno: {this.state.datosAlumno.ap} {this.state.datosAlumno.am} {this.state.datosAlumno.nombre}</h2>
+					<h2>No. de control:  {this.state.datosInscripciones.noControl}</h2>
 				</section>
 			</div>
 
@@ -180,29 +215,37 @@ return	<tr>
 				</section>
 			</div>
 
-			<div className="container">
-				<section>
-				  <h1>Pagos parciales.</h1>
-				  <div className="tbl-header">
-				    <table cellPadding="0" cellSpacing="0" border="0">
-				      <thead>
-				        <tr>
-				          <th>Cantidad.</th>
-				          <th>Fecha de pago.</th>
-				          <th>Metodo de pago.</th>
-				        </tr>
-				      </thead>
-				    </table>
-				  </div>
-					<div className="tbl-content">
-				    <table cellPadding="0" cellSpacing="0" border="0">
-				      <tbody>
-									{this.renderRowsParciales()}
-				      </tbody>
-				    </table>
-				  </div>
-				</section>
-			</div>
+			<Modal className="row"
+					visible={this.state.visible}
+					width="700"
+					height="600"
+					effect="fadeInUp"
+					onClickAway={() => this.closeModal()}>
+					<div className="col-md-12">
+								<section>
+									<h1>Pagos parciales.</h1>
+									<div className="tbl-header">
+										<table cellPadding="0" cellSpacing="0" border="0">
+											<thead>
+												<tr>
+													<th>Cantidad.</th>
+													<th>Fecha de pago.</th>
+													<th>Metodo de pago.</th>
+												</tr>
+											</thead>
+										</table>
+									</div>
+									<div className="tbl-content">
+										<table cellPadding="0" cellSpacing="0" border="0">
+											<tbody>
+													{this.renderRowsParciales()}
+											</tbody>
+										</table>
+									</div>
+									<a href="javascript:void(0);" onClick={() => this.closeModal()}>Cerrar</a>
+								</section>
+					</div>
+			</Modal>
 
 		</div>
     );
