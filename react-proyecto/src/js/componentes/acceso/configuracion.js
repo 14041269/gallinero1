@@ -4,14 +4,28 @@ import Cuenta from './cuenta';
 import Privilegio from './privilegios';
 import Navigation from '../navigation';
 import '../../../css/configAcceso.css';
+import jquery from 'jquery';
+window.$ = window.jQuery = jquery;
 
 class Configuracion extends Component {
 	constructor()
 	{
 		super();
 		this.state={
-			datosUsuario:[]
-		}
+			datosUsuario:{
+				nombre:"",
+				ap:"",
+				am:"",
+				cargo:"",
+				departamento:""
+			},
+			cuenta:{
+				usuario:"",
+				password:""
+			},
+			privi:["Administrador","Coordinador","Director","Financiero","Secretario"],
+			departamentos:["Uno","Dos","Tres","Cuatro"]
+		};
 	}
 
 	render(){
@@ -22,8 +36,8 @@ class Configuracion extends Component {
 					<div className="container">
 						<h1>CONFIGURACIÓN DE ACCESO</h1>
 							<DatosUsuario/>
-							<Cuenta/>
-							<Privilegio/>
+							{/*<Cuenta/>
+							<Privilegio/>*/}
 					</div>
 				</div>
 			</div>
